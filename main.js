@@ -28,10 +28,10 @@ const fecha = document.querySelector('#fecha');
 const lista = document.querySelector('#lista');
 const elemento = document.querySelector('#elemento');
 const input = document.querySelector('#input');
-const botonagregar = document.querySelector('#botonagregar');
-const check = 'be-record-circle';
+const botonAgregar = document.querySelector('#botonAgregar');
+const check = 'bi-record-circle';
 const tachado = 'tachado';
-const uncheck = 'be-circle';
+const uncheck = 'bi-circle';
 let LIST;
 let id;
 
@@ -39,39 +39,45 @@ const FECHA = new Date ();
 fecha.innerHTML = FECHA.toLocaleDateString('es-MX',{
     weekday: 'long',
     month: 'short',
-    day: 'numeric', 
+    day: 'numeric'
 });
+// DOM 
 
-function agregartarea(tarea, id, hecho, eliminar) {
+// Función agregar tarea
+function agregarTarea(tarea,id,hecho,eliminar) {
     if (eliminar) {
         return
-    }
+    };
+
     const realizado = hecho ? check : uncheck;
-    const LINE = hecho ? tachado : '';
+    const LINE = hecho ? tachado : '' ;
     const elemento = `<li id="elemento">
-    <i id="${id}" data="hecho" class="bi ${realizado}"></i>
-    <p class="tarea-lista ${LINE}">${tarea}</p>
-    <i id="${id}" data="eliminar" class="bi bi-trash3"></i>
-</li>`
-lista.insertAdjacentHTML("beforeend",elemento);
+                    <i id="${id}" data="hecho" class="bi ${realizado}"></i>
+                    <p class="tarea-lista text ${LINE}">${tarea}</p>
+                    <i id="${id}" data="eliminar" class="bi bi-trash3"></i>
+                </li> `
+                lista.insertAdjacentHTML("beforeend",elemento);
+
 };
 
-function tarearealizada(element) {
-    element.classlist.toggle(check);
-    element.classlist.toggle(uncheck);
-    element.parentNode.querySelector('.text').classlist.toggle(tachado);
-    LIST[element.id].realizado = LIST[element.id].realizado ? false :true;
-};
+function tareaRealizada(element) {
 
-function tareaeliminada(element) {
+    element.classList.toggle(check);
+    element.classList.toggle(uncheck);
+    
+    element.parentNode.querySelector('.text').classList.toggle(tachado);
+    LIST[element.id].realizado = LIST[element.id].realizado ?false :true;
+}
+function tareaEliminada(element) {
     element.parentNode.parentNode.removeChild(element.parentNode);
     LIST[element.id].eliminar = true;
+    
 };
 
-botonagregar.addEventListener ("click",() => {
+botonAgregar.addEventListener("click", () => {
     const tarea = input.value;
     if (tarea) {
-        agregartarea(tarea, id, false, false)
+        agregarTarea(tarea, id, false, false)
         LIST.push({
             nombre: tarea,
             id: id,
@@ -81,19 +87,19 @@ botonagregar.addEventListener ("click",() => {
         localStorage.setItem("TODO", JSON.stringify(LIST));
         id++;
         input.value = "";
+
     }
 });
 
-lista.addEventListener("click", function (event) {
-const element = event.target;
-const elementData = element.attributes.data.value;
-if (elementData == "hecho") {
-    tareaRealizada(element);
-} else if (elementData == "eliminar")
-{
-    tareaEliminada(element);
-};
-localStorage.setItem("TODO", JSON.stringify(LIST));
+lista.addEventListener("click", function (event){
+    const element = event.target;
+    const elementData = element.attributes.data.value;
+    if (elementData == "hecho") {
+        tareaRealizada(element);
+    } else if (elementData == "eliminar") { 
+        tareaEliminada(element);
+    };
+    localStorage.setItem("TODO", JSON.stringify(LIST));
 });
 
 let data = localStorage.getItem ("TODO");
@@ -103,13 +109,13 @@ if (data) {
     cargarLista(LIST);
 } else {
     LIST = [];
-    id = 0;
-};
+    id = 0; 
+}
 
-function cargarlista(array) {
+function cargarLista(array) {
     array.forEach(
-        function (item) {
-            agregartarea(item.nombre, item.id, item.hecho, item.eliminar);
+        function (item){
+            agregarTarea(item.nombre, item.id, item.hecho, item.eliminar);
         }
-    );
+    )
 };
